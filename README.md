@@ -2,7 +2,7 @@
 
 AXIOM is a **safety-constrained, specification-first** Minecraft Java swarm project. Its intended architecture is one Node.js coordinator managing up to five named Mineflayer identities, durable SQLite state, optional local/private AI inference, controlled Discord operations, and a lightweight authenticated dashboard. Every live capability is gated by exact protocol compatibility, measured device capacity, owner authority, and independent review.
 
-> **Current status — Phase 1 foundation only:** The repository currently implements zero-network configuration validation, redaction, structured logging, typed errors, and 17 unit/security tests. It does **not** yet contain a Mineflayer dependency/client, Minecraft connection, task coordinator, SQLite state store, dashboard, Discord client, provider transport, Aternos automation flow, or measured Android/Chromebook result. Do not describe it as an operational bot swarm or attempt to connect it to a server.
+> **Current status — Phase 1 foundation only:** The repository currently implements zero-network configuration validation, redaction, structured logging, typed errors, a safe configuration-only `npm start` entry point, and 21 unit/security tests. It does **not** yet contain a Mineflayer dependency/client, Minecraft connection, task coordinator, SQLite state store, dashboard, Discord client, provider transport, Aternos automation flow, or measured Android/Chromebook result. Do not describe it as an operational bot swarm or attempt to connect it to a server.
 
 ## How to run the current foundation
 
@@ -19,7 +19,7 @@ npm ci --ignore-scripts
 npm run check
 ```
 
-`npm run check` runs the current 17 zero-network unit/security tests. It does not contact Minecraft, Aternos, Discord, Ollama, Gemini, Groq, a dashboard listener, or SQLite.
+`npm run check` runs the current 21 zero-network unit/security tests. It does not contact Minecraft, Aternos, Discord, Ollama, Gemini, Groq, a dashboard listener, or SQLite.
 
 ### Validate a private configuration file locally
 
@@ -37,7 +37,17 @@ NODE
 
 This command validates and prints a **redacted** configuration snapshot only. The example retains the requested Java 26.2 target as `blocked_unverified`; calling its connection gate is expected to reject the target. It cannot start a bot, open a socket, start a dashboard, call a provider, or automate Aternos.
 
-There is intentionally **no `npm start` command** yet. An operational runbook can be added only after the exact Minecraft compatibility gate, implementation tasks, private-server tests, device qualification, security tests, and release acceptance gates pass.
+### Start the safe foundation
+
+After creating the private configuration file, run:
+
+```bash
+npm start
+```
+
+Expected output is a small JSON status record with `status: "FOUNDATION_READY"`, `networkStarted: false`, and `liveConnections: 0`. `npm start` validates configuration and exits; it is **not** an operational bot/swarm start command. It cannot connect to Minecraft, start a dashboard, call a provider, connect Discord, or automate Aternos.
+
+An operational runbook can be added only after the exact Minecraft compatibility gate, implementation tasks, private-server tests, device qualification, security tests, and release acceptance gates pass.
 
 ## Read first
 

@@ -20,8 +20,9 @@
 - Locked the runtime contract to Node.js `>=22`; generated a zero-dependency `package-lock.json`.
 - Implemented safe defaults: five logical identities, `autoConnect: false`, dashboard/Discord/providers disabled, no network operation, and no target-server connection path.
 - Implemented a hard activation guard: current approved published version set is `['26.1']`; configuration holding the declared 26.2 target remains valid but `assertConnectionAllowed()` returns `MINECRAFT_VERSION_UNSUPPORTED` before any connection logic can exist.
-- Added 17 unit/security tests covering safe defaults, deep immutability, unknown/prototype-polluting input, capacity/identity limits, Aternos auto-connect/session policy, hosted-provider/Discord/dashboard secret gates, private configuration-file permissions, redaction, logger integrity, non-disclosing errors, observer isolation, and typed errors.
+- Added 21 unit/security tests covering safe defaults, deep immutability, unknown/prototype-polluting input, capacity/identity limits, Aternos auto-connect/session policy, hosted-provider/Discord/dashboard secret gates, private configuration-file permissions, redaction, logger integrity, non-disclosing errors, observer isolation, typed errors, and safe `npm start` success/failure behaviour.
 - The owner instruction “do whatever is best” was interpreted narrowly as authority for this zero-network P1-T1 work. It does not close OD-02 through OD-12 or authorize a Mineflayer/provider/Discord/database integration.
+- Added `npm start` as a safe foundation entry point. It validates the private local configuration, emits a small redacted `FOUNDATION_READY` status record, and exits with zero network listeners/connections; it is not a Mineflayer or service launcher.
 
 ### Independent design and certification additions
 
@@ -57,7 +58,7 @@
 | Published tarball inspection | Completed | Version lists and absence of `26.2` verified from package source. |
 | Upstream GitHub issue/PR audit | Completed | Open #4201 and #1550 recorded; no compatibility conclusion inferred from them. |
 | `npm install --package-lock-only --ignore-scripts` | Passed | Generated zero-dependency lockfile; audited 1 package, 0 vulnerabilities. |
-| `npm test` / `npm run check` | Passed | 17 P1-T1 unit/security tests; no network or device integration. |
+| `npm test` / `npm run check` | Passed | 21 P1-T1 unit/security tests; no network or device integration. |
 | `git diff --check` | Passed | Re-run after P1-T1 changes; no whitespace errors. |
 
 ## Required next action

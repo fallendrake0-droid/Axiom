@@ -17,7 +17,7 @@
 
 ## Existing implementation boundary
 
-The repository currently contains only the dependency-free P1-T1 foundation: closed configuration validation, target-version/connection gating, redaction, structured logging, typed errors, and 17 unit/security tests. There is no bot runtime, Mineflayer/protocol dependency, connection routine, persistence implementation, AI transport, Discord client, dashboard server, provider call, or benchmark. Do not fabricate runtime results from the design documents.
+The repository currently contains only the dependency-free P1-T1 foundation: closed configuration validation, target-version/connection gating, redaction, structured logging, typed errors, a safe configuration-only `npm start` entry point, and 21 unit/security tests. There is no bot runtime, Mineflayer/protocol dependency, connection routine, persistence implementation, AI transport, Discord client, dashboard server, provider call, or benchmark. Do not fabricate runtime results from the design documents.
 
 ## Required safety boundaries
 
