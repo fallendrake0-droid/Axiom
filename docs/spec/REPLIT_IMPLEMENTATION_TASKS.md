@@ -10,8 +10,8 @@
 - **No implicit permission:** owner decisions OD-01 through OD-12 in `docs/DECISIONS.md` remain gates. In particular, do not install/connect Mineflayer before OD-02/OD-03, do not contact Aternos as a probe, and do not enable hosted providers, Discord, remote Ollama, or dashboard exposure without their listed gates.
 - **One durable authority:** `StateStore` plus `TaskManager` transactions are the sole authority for tasks, assignments, verified progress, ledger, recovery, and audit facts. A controller, provider, dashboard, Discord adapter, or chat handler must not mutate those records directly.
 - **Compatibility hold:** the configured target Java 26.2 is blocked. Do not patch dependencies, use a protocol proxy, copy NEXUS compatibility code, or silently change the target version.
-- **Completion submission for every task:** changed-file list; commit SHA; exact commands and full summarized results; test environment; raw artifact paths; dependencies/version/lockfile diff; known defects; negative results; relevant RSS/heap/CPU/event-loop/battery/thermal metrics; and an explicit request for review.
-- **Independent-review response:** confirmed findings; required corrections; accepted changes; unresolved questions; and a gate decision (`ACCEPTED`, `CORRECTIONS_REQUIRED`, or `BLOCKED`). The next dependent task may not begin until the prior gate is accepted.
+- **Required Replit completion submission for every task:** changed files; commit reference/SHA; tests run; actual results; known defects; resource measurements (RSS, heap, CPU, event-loop lag, battery/thermal when available); test environment; raw artifact paths; dependencies/version/lockfile diff; negative results; and an explicit request for review.
+- **Independent-review response:** confirmed findings; required corrections; accepted changes; unresolved questions; and a gate decision (`ACCEPTED`, `CORRECTIONS_REQUIRED`, or `BLOCKED`). The next dependent task may not begin until the prior gate is accepted. Every completed implementation phase must receive this review before a task in its next dependent phase begins.
 
 ## 2. Phase mapping and dependency correction
 
