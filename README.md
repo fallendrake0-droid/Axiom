@@ -49,6 +49,10 @@ Expected output is a small JSON status record with `status: "FOUNDATION_READY"`,
 
 An operational runbook can be added only after the exact Minecraft compatibility gate, implementation tasks, private-server tests, device qualification, security tests, and release acceptance gates pass.
 
+### How AXIOM will eventually enter the Minecraft server
+
+It cannot do so today. The planned, owner-controlled admission sequence is documented in [Controlled Minecraft server entry procedure](docs/spec/MINECRAFT_SERVER_ENTRY.md): exact published-version compatibility and a private-server harness first; an accepted reviewed controller/Coordinator path; an authenticated operator action after the human starts a legitimate Aternos session; then one certified identity at a time. It forbids web-UI automation, OP, Minecraft-chat administration, version workarounds, and unlimited reconnects. Five configured names are not permission to make five live connections.
+
 ## Read first
 
 - [Authoritative project context](MASTER_PROJECT_CONTEXT.md)
@@ -75,6 +79,7 @@ An operational runbook can be added only after the exact Minecraft compatibility
 | [Security plan](docs/spec/SECURITY_PLAN.md) | Threat model, controls, authorization, secret handling and incident runbooks |
 | [Test plan](docs/spec/TEST_PLAN.md) | Unit, integration, private-server, security, compatibility and benchmark tests |
 | [Acceptance criteria](docs/spec/ACCEPTANCE_CRITERIA.md) | Release gates and staged live-connection certification |
+| [Controlled Minecraft server entry procedure](docs/spec/MINECRAFT_SERVER_ENTRY.md) | Current connection block and the future gated, operator-controlled admission/stopping sequence |
 | [Implementation roadmap](docs/spec/IMPLEMENTATION_ROADMAP.md) | High-level phases, non-overlapping ownership, and integration authority |
 | [Replit implementation assignments](docs/spec/REPLIT_IMPLEMENTATION_TASKS.md) | Copyable phase-by-phase task packets with exact file boundaries, contracts, dependencies, tests, evidence, and review gates |
 | [Risk register](docs/spec/RISK_REGISTER.md) | Technical, operational, security, compatibility and compliance risks |

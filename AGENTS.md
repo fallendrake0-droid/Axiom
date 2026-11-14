@@ -23,9 +23,10 @@ The owner delegated discretion on 2026-11-14, which has been interpreted narrowl
 13. `docs/spec/ACCEPTANCE_CRITERIA.md`
 14. `docs/spec/IMPLEMENTATION_ROADMAP.md`
 15. `docs/spec/REPLIT_IMPLEMENTATION_TASKS.md`
-16. `docs/spec/RISK_REGISTER.md`
-17. `docs/reviews/FINAL_RELEASE_CERTIFICATION_2026-11-14.md`
-18. `DEVELOPMENT_STATUS.md` and `docs/DECISIONS.md`
+16. `docs/spec/MINECRAFT_SERVER_ENTRY.md`
+17. `docs/spec/RISK_REGISTER.md`
+18. `docs/reviews/FINAL_RELEASE_CERTIFICATION_2026-11-14.md`
+19. `DEVELOPMENT_STATUS.md` and `docs/DECISIONS.md`
 
 When a task touches an external dependency, repeat the package/version research rather than relying on this document's 2026-11-14 audit.
 

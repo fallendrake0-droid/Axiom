@@ -30,7 +30,8 @@
 - Added a proposed loopback-first authenticated five-bot dashboard design in `docs/spec/DASHBOARD_DESIGN.md` and a concurrent-Linux-workload Chromebook/Ollama investigation protocol in `docs/spec/CHROMEBOOK_OLLAMA_FEASIBILITY.md`.
 - Completed an independent release certification audit at implementation ref `b5fc1385681dca2a2a65fa6df1bd0e5e114e1660`: **FAIL / NOT_READY**. It found no additional Replit runtime implementation beyond P1-T1; see `docs/reviews/FINAL_RELEASE_CERTIFICATION_2026-11-14.md`.
 - Added `tools/build-specification-pack.sh`, regenerated `AXIOM_SPECIFICATION_PACK.zip`, and verified the extracted internal manifest. The manifest deliberately excludes itself; the build command prints the current root archive SHA-256 after successful verification.
-- Added `docs/spec/REPLIT_IMPLEMENTATION_TASKS.md`: a non-overlapping, field-by-field Phase 0–11 Replit assignment packet. It preserves the existing architecture/module contracts and adds no implementation result.
+- Added `docs/spec/REPLIT_IMPLEMENTATION_TASKS.md`: a non-overlapping, field-by-field Phase 0–11 Replit assignment packet. Replit owns implementation, the Arena.ai assistant owns independent phase review, GitHub evidence is authoritative, and no dependent phase may begin before its review gate is accepted. It preserves the existing architecture/module contracts and adds no implementation result.
+- Added `docs/spec/MINECRAFT_SERVER_ENTRY.md`: a future-only, controlled server-admission procedure explaining the current block and required compatibility, owner, security, capacity, lifecycle, stop, and review gates. It adds no connection routine or live-server result.
 - These documents and packaging repair add no bot, protocol, provider, Discord, dashboard, SQLite, device, or live-server result.
 
 ## Important research result

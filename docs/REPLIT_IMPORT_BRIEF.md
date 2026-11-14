@@ -9,11 +9,12 @@
 1. `MASTER_PROJECT_CONTEXT.md` — authoritative requirements.
 2. `AGENTS.md` — gates, scope, ownership, and non-negotiable constraints.
 3. `docs/reviews/FINAL_RELEASE_CERTIFICATION_2026-11-14.md` — actual certification verdict and missing evidence.
-4. `docs/spec/REPLIT_IMPLEMENTATION_TASKS.md` — complete non-overlapping implementation assignment packets, file ownership, tests, evidence, and review gates.
-5. `docs/spec/SWARM_RUNTIME_DESIGN.md` — per-bot state, Coordinator, leases, ledger, verification, and recovery contract.
-6. `docs/spec/DASHBOARD_DESIGN.md` — authenticated dashboard boundary.
-7. `docs/spec/CHROMEBOOK_OLLAMA_FEASIBILITY.md` — device investigation protocol.
-8. The remaining `docs/spec/` documents in the reading order in `AGENTS.md`.
+4. `docs/spec/REPLIT_IMPLEMENTATION_TASKS.md` — complete non-overlapping implementation assignment packets, file ownership, tests, evidence, and review gates. Replit owns implementation; the Arena.ai assistant independently reviews each completed phase against GitHub evidence.
+5. `docs/spec/MINECRAFT_SERVER_ENTRY.md` — why target-server connection is currently blocked and the future gated operator-admission sequence.
+6. `docs/spec/SWARM_RUNTIME_DESIGN.md` — per-bot state, Coordinator, leases, ledger, verification, and recovery contract.
+7. `docs/spec/DASHBOARD_DESIGN.md` — authenticated dashboard boundary.
+8. `docs/spec/CHROMEBOOK_OLLAMA_FEASIBILITY.md` — device investigation protocol.
+9. The remaining `docs/spec/` documents in the reading order in `AGENTS.md`.
 
 ## Existing implementation boundary
 
@@ -35,4 +36,4 @@ The newer command contract requires `/status`, `/bots`, `/bot`, `/task`, `/cance
 
 ## Implementation sequence
 
-Follow the non-overlapping task packets in `IMPLEMENTATION_ROADMAP.md`. First resolve owner gates, run the Termux SQLite preflight, implement persistence and the coordinator contract, and obtain version-compatible one-bot evidence before live capacity work. Every delivery must include exact changed files, contract changes, test output, environment, raw artefact paths, known failures, and an integrator review request.
+Follow the non-overlapping task packets in `IMPLEMENTATION_ROADMAP.md`. First resolve owner gates, run the Termux SQLite preflight, implement persistence and the coordinator contract, and obtain version-compatible one-bot evidence before live capacity work. GitHub commit/evidence is the source of truth: every Replit delivery must include exact changed files, commit SHA, contract changes, tests run, actual results, environment, raw artefact paths, known defects, and resource measurements. The Arena.ai assistant then responds with confirmed findings, required corrections, accepted changes, unresolved questions, and a gate decision; the next dependent phase must not begin until that phase is accepted.
