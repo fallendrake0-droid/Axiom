@@ -10,6 +10,7 @@ AXIOM is a **specification-first** design for an intelligent Minecraft Java swar
 - [Agent instructions and implementation guardrails](AGENTS.md)
 - [Development status](DEVELOPMENT_STATUS.md)
 - [Owner decisions required](docs/DECISIONS.md)
+- [Downloadable Replit handoff pack](AXIOM_SPECIFICATION_PACK.zip) — reviewed specifications, import brief, and checksums
 
 ## Specification index
 
