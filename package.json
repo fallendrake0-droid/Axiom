@@ -12,6 +12,7 @@
     "start": "node index.js",
     "check:config": "node index.js --check-config",
     "check:compatibility": "node index.js --check-compatibility",
+    "check:ollama": "node index.js --check-ollama",
     "dry-run": "node index.js --dry-run",
     "test": "node --test",
     "test:coverage": "node --test --experimental-test-coverage"

@@ -23,6 +23,11 @@ class FakeBot extends EventEmitter {
     this.equipped = [];
     this.consumeCalls = 0;
     this.quitCalls = 0;
+    this.clearControlStatesCalls = 0;
+  }
+
+  clearControlStates() {
+    this.clearControlStatesCalls += 1;
   }
 
   chat(message) {
@@ -87,6 +92,11 @@ test('BotController owns a separate client snapshot and runs conservative eating
 
   assert.equal(await controller.say(' hello\nthere '), 'hello there');
   assert.deepEqual(bot.chatMessages, ['hello there']);
+  assert.deepEqual(
+    await controller.applyStrategicAction({ botId: 'hsqoswqi', action: 'idle' }),
+    { applied: true, action: 'idle' }
+  );
+  assert.equal(bot.clearControlStatesCalls, 1);
   await controller.stop();
   assert.equal(controller.state, BOT_STATES.STOPPED);
   assert.equal(bot.quitCalls, 1);

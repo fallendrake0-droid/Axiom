@@ -223,6 +223,29 @@ class BotController extends EventEmitter {
     return safeMessage;
   }
 
+  async applyStrategicAction(assignment) {
+    if (!assignment || assignment.botId !== this.username) {
+      throw new Error('Strategic action was not addressed to this bot.');
+    }
+    if (assignment.action === 'idle') {
+      if (this.state !== BOT_STATES.ONLINE || !this.bot) {
+        return { applied: false, reason: 'not-online' };
+      }
+      if (typeof this.bot.clearControlStates === 'function') this.bot.clearControlStates();
+      this.emit('strategicAction', { botId: this.username, action: 'idle', at: this.now() });
+      return { applied: true, action: 'idle' };
+    }
+    if (assignment.action === 'chat') {
+      if (this.state !== BOT_STATES.ONLINE || !this.bot) {
+        return { applied: false, reason: 'not-online' };
+      }
+      await this.say(assignment.message);
+      this.emit('strategicAction', { botId: this.username, action: 'chat', at: this.now() });
+      return { applied: true, action: 'chat' };
+    }
+    throw new Error(`Strategic action ${String(assignment.action)} is not allowlisted.`);
+  }
+
   getSnapshot() {
     const bot = this.bot;
     return {

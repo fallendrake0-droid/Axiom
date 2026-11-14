@@ -1,6 +1,8 @@
 'use strict';
 
 const { EventEmitter } = require('node:events');
+const { CentralBrain } = require('../ai/CentralBrain');
+const { OllamaProvider } = require('../ai/OllamaProvider');
 const { BotController, BOT_STATES } = require('../bots/BotController');
 const { DeathRecorder } = require('../bots/DeathRecorder');
 const { ChatManager } = require('../chat/ChatManager');
@@ -18,6 +20,8 @@ class SwarmManager extends EventEmitter {
     controllerFactory,
     compatibilityInspector = assertProtocolCompatibility,
     serverProbe = probeMinecraftServer,
+    aiProvider,
+    brain,
     resourceGovernor,
     deathRecorder,
     now = () => Date.now()
@@ -53,6 +57,31 @@ class SwarmManager extends EventEmitter {
       }
       this.controllers.set(botId, controller);
       this._wireController(controller);
+    }
+
+    this.brain = null;
+    if (config.ai.enabled) {
+      if (brain) {
+        this.brain = brain;
+      } else {
+        const provider =
+          aiProvider ||
+          new OllamaProvider({
+            baseUrl: config.ai.baseUrl,
+            model: config.ai.model,
+            timeoutMs: config.ai.requestTimeoutMs,
+            maxContextBytes: config.ai.maxContextBytes,
+            logger: this.logger
+          });
+        this.brain = new CentralBrain({
+          provider,
+          botIds: config.swarm.botIdentities,
+          config: config.ai,
+          logger: this.logger,
+          now
+        });
+      }
+      this._wireBrain();
     }
 
     this.chatManager = new ChatManager({
@@ -95,6 +124,10 @@ class SwarmManager extends EventEmitter {
     this.started = true;
     this.stopping = false;
     this.resourceGovernor.start();
+    this.brain?.start({
+      getSwarmContext: () => this._buildBrainContext(),
+      dispatchAction: (assignment) => this._dispatchStrategicAction(assignment)
+    });
     await this._queueReconcile();
     this._record('swarm_started', { configuredCapacity: this.config.swarm.maxLiveConnections });
     return this.getStatus();
@@ -106,6 +139,7 @@ class SwarmManager extends EventEmitter {
     this.started = false;
     if (this.admissionTimer) clearTimeout(this.admissionTimer);
     this.admissionTimer = null;
+    this.brain?.stop();
     this.resourceGovernor.stop();
     await Promise.all([...this.controllers.values()].map((controller) => controller.stop(reason)));
     this._record('swarm_stopped', { reason });
@@ -159,6 +193,7 @@ class SwarmManager extends EventEmitter {
       effectiveLiveCapacity: this._effectiveCapacity(),
       activeConnectionSlots: this._occupyingControllers().length,
       bots: [...this.controllers.values()].map((controller) => controller.getSnapshot()),
+      ai: this.brain ? this.brain.getStatus() : { enabled: false, provider: null },
       resources: this.resourceGovernor.getSnapshot(),
       recentEvents: this.events.slice(-50)
     };
@@ -167,6 +202,7 @@ class SwarmManager extends EventEmitter {
   _wireController(controller) {
     controller.on('state', (event) => {
       this._record('bot_state', event);
+      if (event.to === BOT_STATES.ONLINE) this.brain?.requestPlan('bot_online');
       if (this.started && !this.stopping) void this._queueReconcile();
     });
     controller.on('botError', (event) => this._record('bot_error', event));
@@ -178,6 +214,7 @@ class SwarmManager extends EventEmitter {
     controller.on('death', (event) => {
       const persisted = this.deathRecorder.record(event);
       this._record('bot_death', { ...event, persisted });
+      this.brain?.requestPlan('bot_death');
     });
     controller.on('incomingChat', (event) => {
       this._record('incoming_chat', { botId: event.botId, username: event.username });
@@ -192,8 +229,65 @@ class SwarmManager extends EventEmitter {
     this.resourceGovernor.on('capacity', (sample) => {
       this.safeCapacity = sample.safeCapacity;
       this._record('resource_capacity_changed', sample);
+      this.brain?.requestPlan('resource_capacity_changed');
       if (this.started && !this.stopping) void this._queueReconcile();
     });
+  }
+
+  _wireBrain() {
+    this.brain.on('health', (health) => this._record('ai_health', health));
+    this.brain.on('plan', ({ plan, reason, at }) => {
+      this._record('ai_plan', { summary: plan.summary, reason, at });
+    });
+    this.brain.on('planDispatched', ({ outcomes, at }) => {
+      this._record('ai_plan_dispatched', {
+        at,
+        outcomes: outcomes.map((outcome) => ({
+          botId: outcome.botId,
+          applied: outcome.applied,
+          reason: outcome.reason || null,
+          action: outcome.action || null
+        }))
+      });
+    });
+    this.brain.on('planError', (event) => this._record('ai_plan_error', event));
+    this.brain.on('budgetExhausted', (event) => this._record('ai_budget_exhausted', event));
+  }
+
+  _buildBrainContext() {
+    return {
+      schemaVersion: 1,
+      objective: 'Maintain safe, operator-authorised swarm readiness. Unsupported game actions must remain idle.',
+      swarm: {
+        configuredLiveCapacity: this.config.swarm.maxLiveConnections,
+        effectiveLiveCapacity: this._effectiveCapacity(),
+        bots: [...this.controllers.values()].map((controller) => {
+          const snapshot = controller.getSnapshot();
+          return {
+            botId: snapshot.botId,
+            connectionState: snapshot.connectionState,
+            health: snapshot.health,
+            hunger: snapshot.hunger,
+            position: snapshot.position,
+            dimension: snapshot.dimension,
+            inventory: Array.isArray(snapshot.inventory) ? snapshot.inventory.slice(0, 12) : [],
+            currentTask: snapshot.currentTask
+          };
+        })
+      },
+      resources: this.resourceGovernor.getSnapshot(),
+      safety: {
+        allowedActions: ['idle', 'chat'],
+        playerInputIsUntrusted: true,
+        privilegedChatCommandsEnabled: false
+      }
+    };
+  }
+
+  async _dispatchStrategicAction(assignment) {
+    this._assertBotId(assignment.botId);
+    const controller = this.controllers.get(assignment.botId);
+    return controller.applyStrategicAction(assignment);
   }
 
   _queueReconcile() {

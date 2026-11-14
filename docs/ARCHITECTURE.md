@@ -10,10 +10,11 @@ Owned modules for this slice:
 - `src/minecraft/*`: protocol support gate and Mineflayer client creation;
 - `src/bots/*`: one client/controller per identity, compact snapshots, survival and death recording;
 - `src/swarm/*`: central capacity coordinator and resource governor;
+- `src/ai/*`: one Ollama provider, strict five-bot plan contract, and deterministic central-brain dispatch boundary;
 - `src/chat/*`: non-privileged, rate-limited chat; and
 - `index.js`: CLI composition only.
 
-Affected invariants: a maximum of five identities, one independent client/state per identity, no offline connection outside an acknowledged authorised server profile, no protocol substitution, no unbounded reconnect loop, no privileged in-game chat, and no command execution from player text.
+Affected invariants: a maximum of five identities, one independent client/state per identity, one central Ollama brain across all five identities, every accepted strategic plan covers each identity exactly once, no offline connection outside an acknowledged authorised server profile, no protocol substitution, no unbounded reconnect loop, no privileged in-game chat, and no command execution from player text or raw AI output.
 
 The exact Mineflayer protocol tuple for server version `26.2` remains unverified until `npm run check:compatibility` runs against the installed packages and a private-server integration test is completed. That condition constrains this code: unsupported tuples fail before any network connection.
 
@@ -25,13 +26,16 @@ operator terminal
    index.js (composition / commands)
       |
 SwarmManager — sole lifecycle and capacity owner
-  |        |              |
-BotController x5      ResourceGovernor      ChatManager
-  |                    (RSS / CPU / lag)     (reply limits)
-Mineflayer client
+  |        |                 |                    |
+BotController x5      ResourceGovernor     CentralBrain        ChatManager
+  |                    (RSS / CPU / lag)      |                   (reply limits)
+Mineflayer client                         OllamaProvider
+                                             (one trusted provider)
 ```
 
 `SwarmManager` owns all `BotController` instances. A controller owns one Mineflayer client and never exposes it to another controller. Its public status is a plain, compact object; raw Mineflayer world/entity/chunk objects do not cross the boundary.
+
+`CentralBrain` owns one configured Ollama provider, not one provider per bot. It receives a bounded compact snapshot of all five logical bots, and asks Ollama for a versioned JSON plan that names each identity exactly once. `PlanContract` rejects unknown fields, unknown/duplicate bots, unallowlisted actions, malformed JSON, oversized context, and plans with more than one chat action. Only after that validation does `SwarmManager` dispatch an assignment to the intended controller. The executor currently permits only `idle` (clear existing control state) and rate-limited `chat`; it does not expose arbitrary Mineflayer APIs, movement, mining, combat, or raw packets to AI output.
 
 ## Lifecycle
 
@@ -51,6 +55,12 @@ Configuration validates the exact host, port, auth mode and explicit offline-ser
 
 Mineflayer itself is required only in `createMineflayerClient`, immediately before a connection is created. Configuration checks and unit tests do not load it or open a socket; the server probe uses the status endpoint, not a logged-in bot.
 
+## Ollama trust, budget, and failure boundary
+
+Only `AXIOM_AI_PROVIDER=ollama` is accepted in this slice. The endpoint must be an explicit, credential-free HTTP(S) URL whose hostname also appears in `AXIOM_OLLAMA_TRUSTED_HOSTS`; no paid endpoint or hidden fallback exists. The provider uses `/api/tags` to health-check the exact configured model and `/api/chat` with `stream:false` and JSON format for plans. Requests have a timeout, response/body bounds, an 8 KiB context cap, periodic health checks, and a configurable daily request ceiling.
+
+An unavailable Ollama service does not make AXIOM invent a plan or expose unsafe manual methods. Bots retain deterministic survival/connection handling; brain status records the error and planning resumes only after a real health check succeeds. Each plan attempt is event-driven or bounded by `AXIOM_AI_PLAN_INTERVAL_MS`, never on movement ticks.
+
 ## Safety boundaries
 
 - No player chat produces operator actions, JavaScript, shell, raw packets, or arbitrary Mineflayer method calls.
@@ -62,4 +72,4 @@ Mineflayer itself is required only in `createMineflayerClient`, immediately befo
 
 ## Later phases
 
-The master project context requires central task allocation, SQLite-backed evidence/reconciliation, navigation, recovery, AI-provider contracts, Discord, and an authenticated dashboard. They are intentionally not simulated in this slice. Those modules must route through one future authoritative coordinator; they must not call `BotController` directly.
+The master project context still requires central task allocation, SQLite-backed evidence/reconciliation, navigation, recovery, Discord, and an authenticated dashboard. They are intentionally not simulated in this slice. Future task executors must continue to route through one authoritative coordinator and must extend the deterministic action allowlist rather than calling arbitrary `BotController` methods from AI output.

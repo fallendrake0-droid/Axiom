@@ -3,6 +3,7 @@
 const readline = require('node:readline');
 const { loadConfig, redactConfig } = require('./src/config/loadConfig');
 const { createLogger } = require('./src/logging/createLogger');
+const { OllamaProvider } = require('./src/ai/OllamaProvider');
 const { inspectProtocolCompatibility } = require('./src/minecraft/compatibility');
 const { SwarmManager } = require('./src/swarm/SwarmManager');
 
@@ -24,6 +25,7 @@ function printHelp(output = process.stdout) {
     '  npm start',
     '  node index.js --check-config',
     '  node index.js --check-compatibility',
+    '  node index.js --check-ollama',
     '  node index.js --dry-run',
     '',
     'Setup:',
@@ -50,7 +52,7 @@ async function runCli(argv = process.argv.slice(2), dependencies = {}) {
     printHelp(output);
     return { exitCode: 0 };
   }
-  const knownFlags = new Set(['--check-config', '--check-compatibility', '--dry-run']);
+  const knownFlags = new Set(['--check-config', '--check-compatibility', '--check-ollama', '--dry-run']);
   const unknownFlags = [...flags].filter((flag) => !knownFlags.has(flag));
   if (unknownFlags.length > 0) {
     errorOutput.write(`Unknown option(s): ${unknownFlags.join(', ')}\n`);
@@ -69,6 +71,28 @@ async function runCli(argv = process.argv.slice(2), dependencies = {}) {
   if (flags.has('--check-config')) {
     printJson(output, { valid: true, config: redactConfig(config) });
     return { exitCode: 0 };
+  }
+  if (flags.has('--check-ollama')) {
+    if (!config.ai.enabled) {
+      errorOutput.write('Ollama brain is disabled by AXIOM_AI_ENABLED=false.\n');
+      return { exitCode: 1 };
+    }
+    const provider =
+      dependencies.aiProvider ||
+      new OllamaProvider({
+        baseUrl: config.ai.baseUrl,
+        model: config.ai.model,
+        timeoutMs: config.ai.requestTimeoutMs,
+        maxContextBytes: config.ai.maxContextBytes
+      });
+    try {
+      const health = await provider.healthCheck();
+      printJson(output, health);
+      return { exitCode: health.healthy ? 0 : 1 };
+    } catch (error) {
+      errorOutput.write(`Unable to check Ollama: ${error.message}\n`);
+      return { exitCode: 1 };
+    }
   }
 
   let compatibility;

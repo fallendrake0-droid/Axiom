@@ -39,6 +39,11 @@ class FakeController extends EventEmitter {
     return message;
   }
 
+  async applyStrategicAction(assignment) {
+    this.lastStrategicAction = assignment;
+    return { applied: true, action: assignment.action };
+  }
+
   getSnapshot() {
     return { botId: this.username, connectionState: this.state, isLive: this.state === BOT_STATES.ONLINE };
   }
@@ -47,6 +52,33 @@ class FakeController extends EventEmitter {
     const previous = this.state;
     this.state = next;
     this.emit('state', { botId: this.username, from: previous, to: next, reason, at: 1 });
+  }
+}
+
+class FakeBrain extends EventEmitter {
+  constructor() {
+    super();
+    this.started = false;
+    this.stopped = false;
+    this.reasons = [];
+    this.status = { enabled: true, provider: 'ollama', health: { healthy: true } };
+  }
+
+  start(options) {
+    this.started = true;
+    this.options = options;
+  }
+
+  stop() {
+    this.stopped = true;
+  }
+
+  requestPlan(reason) {
+    this.reasons.push(reason);
+  }
+
+  getStatus() {
+    return this.status;
   }
 }
 
@@ -75,7 +107,7 @@ class FakeGovernor extends EventEmitter {
   }
 }
 
-function config() {
+function config(overrides = {}) {
   return loadConfig({
     cwd: process.cwd(),
     dotEnvValues: {},
@@ -86,9 +118,11 @@ function config() {
       AXIOM_MINECRAFT_VERSION: '26.2',
       AXIOM_ENABLED_BOTS: BOT_IDENTITIES.join(','),
       AXIOM_MAX_LIVE_CONNECTIONS: '1',
+      AXIOM_AI_ENABLED: 'false',
       AXIOM_LOGIN_STAGGER_MS: '2500',
       AXIOM_CHAT_PROACTIVE: 'false',
-      AXIOM_CHAT_COMMANDS_ENABLED: 'false'
+      AXIOM_CHAT_COMMANDS_ENABLED: 'false',
+      ...overrides
     }
   });
 }
@@ -132,6 +166,71 @@ test('SwarmManager makes one central capacity decision and queues remaining iden
   assert.equal(manager.getStatus().effectiveLiveCapacity, 0);
   await manager.stop();
   assert.equal(governor.started, false);
+});
+
+test('SwarmManager admits all five requested bots when the configured safe capacity is five', async () => {
+  const controllers = new Map();
+  let clock = 0;
+  const manager = new SwarmManager({
+    config: config({ AXIOM_MAX_LIVE_CONNECTIONS: '5' }),
+    logger: { debug() {}, info() {}, warn() {}, error() {}, child() { return this; } },
+    controllerFactory: (options) => {
+      const controller = new FakeController(options);
+      controllers.set(options.username, controller);
+      return controller;
+    },
+    compatibilityInspector: () => ({ compatible: true, experimental: false, requestedVersion: '26.2' }),
+    serverProbe: async () => ({ version: { name: '26.2', protocol: 999 }, players: { online: 0, max: 20 }, latency: 1 }),
+    resourceGovernor: new FakeGovernor(),
+    deathRecorder: { record: () => true },
+    now: () => {
+      clock += 3000;
+      return clock;
+    }
+  });
+
+  await manager.start();
+  for (let index = 0; index < 10; index += 1) await flush();
+  assert.equal(manager.getStatus().configuredLiveCapacity, 5);
+  assert.equal(manager.getStatus().activeConnectionSlots, 5);
+  assert.deepEqual(
+    BOT_IDENTITIES.map((botId) => controllers.get(botId).startCalls),
+    [1, 1, 1, 1, 1]
+  );
+  await manager.stop();
+});
+
+test('SwarmManager gives one central brain all five compact bot states and dispatches only through controllers', async () => {
+  const controllers = new Map();
+  const brain = new FakeBrain();
+  const manager = new SwarmManager({
+    config: config({ AXIOM_MAX_LIVE_CONNECTIONS: '5', AXIOM_AI_ENABLED: 'true' }),
+    logger: { debug() {}, info() {}, warn() {}, error() {}, child() { return this; } },
+    controllerFactory: (options) => {
+      const controller = new FakeController(options);
+      controllers.set(options.username, controller);
+      return controller;
+    },
+    compatibilityInspector: () => ({ compatible: true, experimental: false, requestedVersion: '26.2' }),
+    serverProbe: async () => ({ version: { name: '26.2', protocol: 999 }, players: { online: 0, max: 20 }, latency: 1 }),
+    resourceGovernor: new FakeGovernor(),
+    deathRecorder: { record: () => true },
+    brain,
+    now: () => 10000
+  });
+
+  await manager.start();
+  const context = brain.options.getSwarmContext();
+  assert.deepEqual(context.swarm.bots.map((bot) => bot.botId), BOT_IDENTITIES);
+  assert.equal(brain.started, true);
+  assert.equal(manager.getStatus().ai.provider, 'ollama');
+  assert.deepEqual(
+    await brain.options.dispatchAction({ botId: 'hsqoswqi', action: 'idle' }),
+    { applied: true, action: 'idle' }
+  );
+  assert.deepEqual(controllers.get('hsqoswqi').lastStrategicAction, { botId: 'hsqoswqi', action: 'idle' });
+  await manager.stop();
+  assert.equal(brain.stopped, true);
 });
 
 test('ChatManager only responds to mentions or questions and enforces per-bot and global throttles', async () => {

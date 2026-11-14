@@ -31,7 +31,7 @@ test('configuration accepts only the acknowledged authorised offline target', ()
   const config = loadConfig({ env: authorizedEnv(), cwd: process.cwd(), dotEnvValues: {} });
   assert.equal(config.server.host, 'ZCClanOnTOP.aternos.me');
   assert.equal(config.server.offlineServerAuthorized, true);
-  assert.equal(config.swarm.maxLiveConnections, 1);
+  assert.equal(config.swarm.maxLiveConnections, 5);
   assert.deepEqual(config.swarm.botIdentities, BOT_IDENTITIES);
   assert.equal(redactConfig(config).server.auth, 'offline');
 });
@@ -51,6 +51,31 @@ test('configuration fails closed for arbitrary offline hosts and in-game command
       return true;
     }
   );
+});
+
+test('configuration only permits an explicitly trusted Ollama endpoint', () => {
+  assert.throws(
+    () =>
+      loadConfig({
+        env: authorizedEnv({
+          AXIOM_OLLAMA_BASE_URL: 'http://192.168.1.10:11434',
+          AXIOM_OLLAMA_TRUSTED_HOSTS: '127.0.0.1,localhost'
+        }),
+        cwd: process.cwd(),
+        dotEnvValues: {}
+      }),
+    /OLLAMA_BASE_URL host must appear/
+  );
+  const config = loadConfig({
+    env: authorizedEnv({
+      AXIOM_OLLAMA_BASE_URL: 'http://192.168.1.10:11434',
+      AXIOM_OLLAMA_TRUSTED_HOSTS: '192.168.1.10'
+    }),
+    cwd: process.cwd(),
+    dotEnvValues: {}
+  });
+  assert.equal(config.ai.provider, 'ollama');
+  assert.equal(config.ai.model, 'qwen2.5:0.5b');
 });
 
 test('configuration requires an explicit offline authorisation acknowledgement', () => {

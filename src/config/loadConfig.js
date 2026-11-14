@@ -17,7 +17,7 @@ const DEFAULTS = Object.freeze({
   minecraftVersion: '26.2',
   minecraftAuth: 'offline',
   authorisedOfflineHost: 'ZCClanOnTOP.aternos.me',
-  maxLiveConnections: 1,
+  maxLiveConnections: 5,
   loginStaggerMs: 4000,
   viewDistance: 4,
   reconnectMaxAttempts: 5,
@@ -31,6 +31,16 @@ const DEFAULTS = Object.freeze({
   chatCooldownMs: 7000,
   chatGlobalMaxPerMinute: 3,
   chatCommandsEnabled: false,
+  aiEnabled: true,
+  aiProvider: 'ollama',
+  ollamaBaseUrl: 'http://127.0.0.1:11434',
+  ollamaModel: 'qwen2.5:0.5b',
+  ollamaTrustedHosts: '127.0.0.1,localhost,::1',
+  aiRequestTimeoutMs: 20000,
+  aiPlanIntervalMs: 60000,
+  aiHealthCheckIntervalMs: 30000,
+  aiMaxRequestsPerDay: 240,
+  aiMaxContextBytes: 8192,
   allowExperimentalProtocol: false,
   dataDir: './data',
   logLevel: 'info'
@@ -175,6 +185,32 @@ function loadConfig({ env = process.env, cwd = process.cwd(), dotEnvValues } = {
         DEFAULTS.chatCommandsEnabled
       )
     },
+    ai: {
+      enabled: booleanValue(values, 'AXIOM_AI_ENABLED', DEFAULTS.aiEnabled),
+      provider: stringValue(values, 'AXIOM_AI_PROVIDER', DEFAULTS.aiProvider).toLowerCase(),
+      baseUrl: stringValue(values, 'AXIOM_OLLAMA_BASE_URL', DEFAULTS.ollamaBaseUrl),
+      model: stringValue(values, 'AXIOM_OLLAMA_MODEL', DEFAULTS.ollamaModel),
+      trustedHosts: parseEnabledBots(
+        stringValue(values, 'AXIOM_OLLAMA_TRUSTED_HOSTS', DEFAULTS.ollamaTrustedHosts)
+      ).map((host) => host.toLowerCase()),
+      requestTimeoutMs: integerValue(
+        values,
+        'AXIOM_AI_REQUEST_TIMEOUT_MS',
+        DEFAULTS.aiRequestTimeoutMs
+      ),
+      planIntervalMs: integerValue(values, 'AXIOM_AI_PLAN_INTERVAL_MS', DEFAULTS.aiPlanIntervalMs),
+      healthCheckIntervalMs: integerValue(
+        values,
+        'AXIOM_AI_HEALTHCHECK_INTERVAL_MS',
+        DEFAULTS.aiHealthCheckIntervalMs
+      ),
+      maxRequestsPerDay: integerValue(
+        values,
+        'AXIOM_AI_MAX_REQUESTS_PER_DAY',
+        DEFAULTS.aiMaxRequestsPerDay
+      ),
+      maxContextBytes: integerValue(values, 'AXIOM_AI_MAX_CONTEXT_BYTES', DEFAULTS.aiMaxContextBytes)
+    },
     runtime: {
       dataDir: path.resolve(cwd, stringValue(values, 'AXIOM_DATA_DIR', DEFAULTS.dataDir)),
       logLevel: stringValue(values, 'AXIOM_LOG_LEVEL', DEFAULTS.logLevel).toLowerCase()
@@ -275,6 +311,49 @@ function validateConfig(config) {
   if (!Number.isInteger(config.chat.globalMaxPerMinute) || config.chat.globalMaxPerMinute < 1 || config.chat.globalMaxPerMinute > 20) {
     errors.push('AXIOM_CHAT_GLOBAL_MAX_PER_MINUTE must be an integer from 1 to 20.');
   }
+  if (invalidBoolean(config.ai.enabled)) {
+    errors.push('AXIOM_AI_ENABLED must be exactly true or false.');
+  }
+  if (config.ai.enabled) {
+    if (config.ai.provider !== 'ollama') {
+      errors.push('Only the free local/trusted-network Ollama provider is supported in this worker.');
+    }
+    let ollamaUrl;
+    try {
+      ollamaUrl = new URL(config.ai.baseUrl);
+      if (!['http:', 'https:'].includes(ollamaUrl.protocol) || ollamaUrl.username || ollamaUrl.password || ollamaUrl.search || ollamaUrl.hash) {
+        errors.push('AXIOM_OLLAMA_BASE_URL must be a credential-free http(s) endpoint without query parameters.');
+      }
+    } catch {
+      errors.push('AXIOM_OLLAMA_BASE_URL must be a valid URL.');
+    }
+    if (!Array.isArray(config.ai.trustedHosts) || config.ai.trustedHosts.length === 0) {
+      errors.push('AXIOM_OLLAMA_TRUSTED_HOSTS must explicitly list the trusted Ollama host.');
+    } else if (
+      ollamaUrl &&
+      !config.ai.trustedHosts.includes(ollamaUrl.hostname.toLowerCase().replace(/^\[|\]$/g, ''))
+    ) {
+      errors.push('AXIOM_OLLAMA_BASE_URL host must appear in AXIOM_OLLAMA_TRUSTED_HOSTS.');
+    }
+    if (!/^[a-zA-Z0-9._:-]{1,128}$/.test(config.ai.model)) {
+      errors.push('AXIOM_OLLAMA_MODEL must be a simple model tag without spaces or shell characters.');
+    }
+    if (!Number.isInteger(config.ai.requestTimeoutMs) || config.ai.requestTimeoutMs < 1000 || config.ai.requestTimeoutMs > 120000) {
+      errors.push('AXIOM_AI_REQUEST_TIMEOUT_MS must be an integer from 1000 to 120000.');
+    }
+    if (!Number.isInteger(config.ai.planIntervalMs) || config.ai.planIntervalMs < 30000 || config.ai.planIntervalMs > 3600000) {
+      errors.push('AXIOM_AI_PLAN_INTERVAL_MS must be an integer from 30000 to 3600000.');
+    }
+    if (!Number.isInteger(config.ai.healthCheckIntervalMs) || config.ai.healthCheckIntervalMs < 10000 || config.ai.healthCheckIntervalMs > 3600000) {
+      errors.push('AXIOM_AI_HEALTHCHECK_INTERVAL_MS must be an integer from 10000 to 3600000.');
+    }
+    if (!Number.isInteger(config.ai.maxRequestsPerDay) || config.ai.maxRequestsPerDay < 1 || config.ai.maxRequestsPerDay > 1000) {
+      errors.push('AXIOM_AI_MAX_REQUESTS_PER_DAY must be an integer from 1 to 1000.');
+    }
+    if (!Number.isInteger(config.ai.maxContextBytes) || config.ai.maxContextBytes < 1024 || config.ai.maxContextBytes > 8192) {
+      errors.push('AXIOM_AI_MAX_CONTEXT_BYTES must be an integer from 1024 to 8192.');
+    }
+  }
   if (!['debug', 'info', 'warn', 'error'].includes(config.runtime.logLevel)) {
     errors.push('AXIOM_LOG_LEVEL must be debug, info, warn, or error.');
   }
@@ -296,6 +375,7 @@ function redactConfig(config) {
     reconnect: { ...config.reconnect },
     resources: { ...config.resources },
     chat: { ...config.chat },
+    ai: { ...config.ai },
     runtime: { dataDir: config.runtime.dataDir, logLevel: config.runtime.logLevel }
   };
 }

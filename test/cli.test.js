@@ -45,6 +45,23 @@ test('dry run checks configuration and package compatibility without creating a 
   assert.deepEqual(JSON.parse(stdout.read()).liveConnectionsOpened, 0);
 });
 
+test('Ollama CLI check reports configured provider health without creating a Minecraft client', async () => {
+  const stdout = capture();
+  const stderr = capture();
+  const result = await runCli(['--check-ollama'], {
+    stdout: stdout.stream,
+    stderr: stderr.stream,
+    env: env(),
+    cwd: process.cwd(),
+    aiProvider: {
+      healthCheck: async () => ({ healthy: true, provider: 'ollama', model: 'qwen2.5:0.5b', reason: null })
+    }
+  });
+  assert.equal(result.exitCode, 0);
+  assert.equal(JSON.parse(stdout.read()).healthy, true);
+  assert.equal(stderr.read(), '');
+});
+
 test('CLI rejects unsupported options without starting a worker', async () => {
   const stdout = capture();
   const stderr = capture();
