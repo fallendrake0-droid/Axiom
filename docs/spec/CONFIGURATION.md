@@ -103,7 +103,7 @@ Minecraft offline usernames are non-secret but are still configuration data. No 
 
 ## 4. Startup validation
 
-Startup must reject: duplicate bot IDs/usernames; more than five identities; non-positive caps; cap values outside `0..5`; a live cap above certification; no protected regions for enabled destructive actions; an external dashboard bind without TLS/auth; non-HTTPS remote Ollama except explicit loopback development; `aternos=true` plus `autoConnect=true`; unapproved server profile; target `26.2` with `compatibilityState` other than verified; PvP true; provider enabled without its required secret and explicit no-charge acknowledgement; blank Discord allowlist; or mutable Discord usernames in place of numeric snowflakes.
+Startup must reject: duplicate bot IDs/usernames; more than five identities; non-positive caps; cap values outside `0..5`; a live cap above certification; no protected regions for enabled destructive actions; an external dashboard bind without TLS/auth; non-HTTPS remote Ollama except explicit loopback development; `aternos=true` plus `autoConnect=true`; PvP true; provider enabled without its required secret and explicit no-charge acknowledgement; Discord command registration while Discord is disabled; enabled Discord without a guild-scoped development ID or an immutable user-ID allowlist; or mutable Discord usernames in place of numeric snowflakes. A profile may remain stored but inactive with `serverApprovedByOperator: false` and/or `compatibilityState: blocked_unverified`; `assertConnectionAllowed()` rejects it at activation and separately rejects target 26.2 until the published compatibility tuple is verified.
 
 ## 5. Runtime effective ceilings
 

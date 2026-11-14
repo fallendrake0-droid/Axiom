@@ -1,0 +1,18 @@
+# Secrets and deployment-local configuration
+.env
+.env.*
+!.env.example
+config/axiom.config.json
+
+# Runtime state and operational artefacts
+data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+logs/
+benchmarks/results/
+
+# Tooling and operating-system noise
+node_modules/
+coverage/
+.DS_Store

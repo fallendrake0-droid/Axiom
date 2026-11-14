@@ -2,7 +2,7 @@
 
 AXIOM is a **specification-first** design for an intelligent Minecraft Java swarm with up to five configured Mineflayer identities, a single Node.js coordinator, local SQLite persistence, optional remote Ollama, Discord operations, a lightweight dashboard, and strict safety controls.
 
-> **Current status — Phase 0 / no runtime implementation:** The repository contains the authoritative brief and an architecture proposal. It does **not** contain a bot, dependencies, a dashboard, an Aternos automation flow, or measured Android/Chromebook results. Specification acceptance and the blocking owner decisions are required before implementation.
+> **Current status — Phase 1 foundation:** A zero-network configuration, validation, redaction, structured-logging, and test foundation is implemented. It does **not** contain a bot dependency, Minecraft connection, database, dashboard, Discord client, provider integration, Aternos automation flow, or measured Android/Chromebook result. Live integration remains blocked by the documented owner decisions.
 
 ## Read first
 
@@ -34,3 +34,11 @@ AXIOM is a **specification-first** design for an intelligent Minecraft Java swar
 **UNVERIFIED:** Minecraft Java/Spigot 26.2 end-to-end support; the target Aternos server's current availability and protocol; Aternos' current terms text; Replit's current deployment limitations; both device's actual capacity; Qwen2.5 0.5B model behavior and memory; and every free-tier provider quota.
 
 **RECOMMENDED:** Do not connect AXIOM to the target server until a clean private-server compatibility harness passes. If the owner needs an immediately package-supported alternative, select **Java 26.1** only after verifying that the chosen authorised server host offers that exact build. No automatic downgrade and no protocol proxy are permitted.
+
+## Current foundation validation
+
+```bash
+npm test
+```
+
+The Phase 1 test suite validates closed configuration, safe connection gating, file-permission checks, secret redaction, structured logging, and typed errors. It intentionally performs no network, provider, database, Discord, Aternos, or Minecraft operation.

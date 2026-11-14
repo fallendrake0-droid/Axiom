@@ -22,7 +22,7 @@
 
 | ID | Decision required | Safe default before decision | Blocks |
 |---|---|---|---|
-| OD-01 | Accept this Phase 0 specification and authorize Phase 1 implementation. | No source implementation. | All code work |
+| OD-01 | Formally accept the specification and confirm later-phase implementation authority. The owner's 2026-11-14 “do whatever is best” instruction has been interpreted narrowly to authorize P1-T1 only. | Zero-network P1-T1 foundation may proceed; all later/live work remains blocked. | P1-T2 onward / all live work |
 | OD-02 | Is exact Java **26.2** mandatory, or is a verified Java **26.1** private-server alternative permitted while upstream support catches up? | 26.2 remains blocked; no silent downgrade. | Any live Mineflayer integration |
 | OD-03 | Provide an owner-controlled private test server and its exact Java/Spigot build for the compatibility harness. | No target-server connection. | P0-T2 / Phase 2 |
 | OD-04 | Confirm the target server is owner-authorised and set protected regions, allowed worlds/dimensions, server connection cap, and prohibited actions. | `mine`, `build`, PvP, trading, fishing and storage mutation disabled on shared worlds. | World interaction |

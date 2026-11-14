@@ -110,8 +110,7 @@ AXIOM/
 ├── package.json                              # AXIOM-INTEGRATOR only
 ├── package-lock.json                         # AXIOM-INTEGRATOR only
 ├── config/
-│   ├── axiom.config.example.json
-│   └── schemas/axiom-config.schema.json
+│   └── axiom.config.example.json             # custom closed validator lives in src/shared/validation
 ├── migrations/
 │   └── 001_initial.sql                       # persistence owner, ordered by integrator
 ├── src/

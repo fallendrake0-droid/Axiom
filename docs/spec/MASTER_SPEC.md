@@ -8,7 +8,7 @@
 
 AXIOM is a safety-constrained Minecraft Java swarm: five configured offline-mode Mineflayer identities (`hsqoswqi`, `qojjosqsjiox`, `soiqsjowisjo`, `sqisoqwsi`, `sqosuqwos`), one Android-resident Node.js process, one central coordinator, one SQLite ledger, and one selected AI provider. It is designed only for the owner-authorised server profile declared in configuration. It is not an Aternos server-starting tool, AFK tool, anti-cheat bypass, public-server botnet, or autonomous administrator.
 
-The initial deliverable is deliberately **not** a large codebase. This repository now contains the contract required to make an implementation reviewable. Phase 0 remains open until the owner accepts it.
+The initial deliverable is deliberately **not** a large codebase. This repository contains the contract required to make implementation reviewable. The owner subsequently delegated discretion on 2026-11-14; this authorizes only the zero-network Phase 1 foundation. All live/server/provider/device phases remain blocked until their specific decisions and gates are satisfied.
 
 ### Status vocabulary
 

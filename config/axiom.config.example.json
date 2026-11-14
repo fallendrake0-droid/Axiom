@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "deployment": {
+    "mode": "development",
+    "nodeMinMajor": 22,
+    "timezone": "UTC",
+    "shutdownDeadlineMs": 15000
+  },
+  "serverProfiles": [
+    {
+      "id": "zcclan-authorised",
+      "host": "ZCClanOnTOP.aternos.me",
+      "port": 25565,
+      "edition": "java",
+      "version": "26.2",
+      "authMode": "offline_owner_authorised",
+      "serverApprovedByOperator": false,
+      "aternos": true,
+      "operatorSessionRequired": true,
+      "connectionCap": 5,
+      "loginSpacingMs": 5000,
+      "protectedRegions": [],
+      "allowedDimensions": ["minecraft:overworld"],
+      "allowPvp": false,
+      "compatibilityState": "blocked_unverified"
+    }
+  ],
+  "bots": {
+    "configuredIdentities": [
+      {"id": "bot-1", "username": "hsqoswqi", "enabled": true},
+      {"id": "bot-2", "username": "qojjosqsjiox", "enabled": true},
+      {"id": "bot-3", "username": "soiqsjowisjo", "enabled": true},
+      {"id": "bot-4", "username": "sqisoqwsi", "enabled": true},
+      {"id": "bot-5", "username": "sqosuqwos", "enabled": true}
+    ],
+    "maxIdentities": 5,
+    "requestedLiveConnectionCeiling": 5,
+    "certifiedLiveConnectionCeiling": 1,
+    "autoConnect": false,
+    "viewDistance": "tiny",
+    "reconnect": {"maxTransientAttempts": 2, "delaysMs": [5000, 15000]}
+  },
+  "ai": {
+    "primary": "ollama",
+    "automaticFailover": false,
+    "maxInFlight": 1,
+    "maxQueued": 3,
+    "requestBudget": {"perHour": 20, "perDay": 100},
+    "providers": {
+      "ollama": {
+        "enabled": false,
+        "model": "qwen2.5:0.5b",
+        "baseUrl": "https://ollama.private.example",
+        "connectTimeoutMs": 2500,
+        "warmTimeoutMs": 8000,
+        "coldTimeoutMs": 20000,
+        "keepAlive": "0"
+      },
+      "gemini": {"enabled": false, "model": "", "freeAccessAcknowledged": false},
+      "groq": {"enabled": false, "model": "", "freeAccessAcknowledged": false}
+    }
+  },
+  "chat": {
+    "enabled": true,
+    "replyMode": "mentions_and_questions",
+    "proactiveOllamaOnly": false,
+    "globalCooldownMs": 30000,
+    "perBotCooldownMs": 60000,
+    "maxVisibleChars": 200,
+    "threadMaxTurns": 12,
+    "threadTtlMs": 1800000,
+    "maxThreads": 64,
+    "storeRawChat": false
+  },
+  "discord": {"enabled": false, "guildId": "", "authorizedUserIds": [], "registerCommandsOnStartup": false},
+  "dashboard": {"enabled": false, "bindHost": "127.0.0.1", "port": 3080, "sessionTtlMinutes": 60, "requireHttpsOutsideLoopback": true},
+  "persistence": {"path": "~/.local/share/axiom/axiom.sqlite", "taskRetentionDays": 7, "auditRetentionDays": 30, "chatRetentionHours": 24},
+  "performance": {"sampleIntervalMs": 5000, "eventLoopWarningMs": 50, "pathfinderTickBudgetMs": 10, "maxConcurrentPathfinders": 1, "queueMax": 100, "cacheMaxEntries": 256}
+}

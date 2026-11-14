@@ -2,9 +2,9 @@
 
 ## Current delivery state
 
-AXIOM is in **Phase 0 — specification acceptance**. The authoritative project brief is [`MASTER_PROJECT_CONTEXT.md`](./MASTER_PROJECT_CONTEXT.md). The architecture documents in [`docs/spec/`](./docs/spec/) are a proposed, internally consistent implementation contract; they are not evidence that a live bot, a provider, or Minecraft 26.2 works.
+AXIOM is in **Phase 1 — zero-network foundation**. The authoritative project brief is [`MASTER_PROJECT_CONTEXT.md`](./MASTER_PROJECT_CONTEXT.md). The architecture documents in [`docs/spec/`](./docs/spec/) remain the implementation contract; they are not evidence that a live bot, a provider, or Minecraft 26.2 works.
 
-**Do not begin large-scale implementation until the owner accepts the specification and the blocking decisions in [`docs/DECISIONS.md`](./docs/DECISIONS.md) have been resolved.** A small compatibility probe may be approved independently, but it must not silently alter the target version or connect repeatedly to Aternos.
+The owner delegated discretion on 2026-11-14, which has been interpreted narrowly as approval for **P1-T1 only**: configuration, validation, redaction, structured logging, and unit/security tests. **Do not begin live integration, dependency installation, a Minecraft connection, or large-scale implementation until the relevant blocking decisions in [`docs/DECISIONS.md`](./docs/DECISIONS.md) are resolved.** A small compatibility probe may be approved independently, but it must not silently alter the target version or connect repeatedly to Aternos.
 
 ## Required reading order before any change
 
@@ -47,11 +47,12 @@ Follow the non-overlapping file ownership in `IMPLEMENTATION_ROADMAP.md`. `AXIOM
 
 ## Validation baseline
 
-No application test command exists in Phase 0. Documentation changes require at minimum:
+The P1-T1 foundation uses the dependency-free Node test runner:
 
 ```bash
+npm test
 git diff --check
 git status --short
 ```
 
-When implementation starts, the exact test commands, compatibility harness, benchmark procedures, and release gates are those in `TEST_PLAN.md` and `ACCEPTANCE_CRITERIA.md`. A test is not a pass until its command, environment, raw output location, and commit are recorded in `DEVELOPMENT_STATUS.md`.
+The passing P1-T1 tests prove configuration/validation/redaction behavior only. They do not prove Minecraft, SQLite-on-Termux, Aternos, Discord, dashboard, provider, device, or gameplay behavior. Later exact test commands, compatibility harness, benchmark procedures, and release gates are in `TEST_PLAN.md` and `ACCEPTANCE_CRITERIA.md`. A test is not a pass until its command, environment, raw output location, and commit are recorded in `DEVELOPMENT_STATUS.md`.
