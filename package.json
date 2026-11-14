@@ -1,0 +1,24 @@
+{
+  "name": "axiom-mineflayer-swarm",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Safety-first Mineflayer bot swarm for an authorised Minecraft Java server",
+  "main": "index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "check:config": "node index.js --check-config",
+    "check:compatibility": "node index.js --check-compatibility",
+    "dry-run": "node index.js --dry-run",
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage"
+  },
+  "dependencies": {
+    "minecraft-data": "3.114.0",
+    "minecraft-protocol": "1.67.0",
+    "mineflayer": "4.39.0"
+  }
+}
