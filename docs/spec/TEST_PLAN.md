@@ -54,8 +54,8 @@ tests/
 
 ### 3.5 Discord/dashboard/security
 
-1. Every required slash command verifies authorised numeric user ID. Unauthorised, malformed, replayed, and rate-limited interaction gets a safe denial and no state mutation.
-2. `/sayall` queues per-bot sends through chat throttles; it cannot flood or bypass stop/pressure policy.
+1. Every required slash command — `/status`, `/bots`, `/bot`, `/task`, `/cancel`, `/stop`, `/say`, `/sayall`, `/provider`, `/chatmode`, and `/help` — verifies authorised numeric user ID where privileged. Unauthorised, malformed, replayed, and rate-limited interaction gets a safe denial and no state mutation.
+2. `/cancel` proves lease fencing and idempotency; `/sayall` queues per-bot sends through chat throttles and cannot flood or bypass stop/pressure policy.
 3. Dashboard tests cover password/session rotation, role access, secure cookie options, CSRF, origin, rate limit, request cap, SSE slow consumer, redaction, and route-to-Coordinator-only rule.
 4. Secret scanner plus unit redaction test proves environment values never appear in logs, error envelopes, dashboard snapshot, Discord response, or provider prompt.
 5. TLS tests reject wrong host, untrusted CA, expired cert, plaintext external Ollama URL, and public bind when policy forbids it.

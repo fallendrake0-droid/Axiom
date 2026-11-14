@@ -124,9 +124,9 @@ All task packets inherit: CommonJS/async; closed DTO validation; `DomainError`; 
 
 - **Owner/files:** Chat/Discord owner; `src/chat/*`, `src/discord/DiscordAdapter.js`, `tests/{unit,security,integration}/chat-discord*.test.js`.
 - **Objective / inputs / outputs:** inbound chat/Discord interactions; output one selected safe response or authorised Coordinator request.
-- **Public methods/events/data:** ChatManager/DiscordAdapter methods/events; conversation/chat queue/interaction DTOs.
-- **Errors/security/performance:** player chat cannot privilege; Discord IDs only; tokens secret; cooldown/retention/queue cap; proactive disabled default.
-- **Tests/acceptance:** required command matrix, unauthorised tests, injection/sayall throttle/one responder tests; G-05/G-07.
+- **Public methods/events/data:** ChatManager/DiscordAdapter methods/events; conversation/chat queue/interaction DTOs. Required adapter commands are `/status`, `/bots`, `/bot`, `/task`, `/cancel`, `/stop`, `/say`, `/sayall`, `/provider`, `/chatmode`, and `/help`; each invokes an existing Coordinator use case.
+- **Errors/security/performance:** player chat cannot privilege; Discord IDs only; tokens secret; `/cancel` requires task-ID validation and epoch fencing; cooldown/retention/queue cap; proactive disabled default.
+- **Tests/acceptance:** complete required command matrix, unauthorised tests, cancel/lease-fencing test, injection/sayall throttle/one responder tests; G-05/G-07.
 
 ### P8-T1 — Dashboard and operational views
 

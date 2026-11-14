@@ -33,7 +33,9 @@ Required commands:
 | `/sayall message` | queued `sendManualChat` per connected bot | authorised operator |
 | `/status` | `getStatus` | authorised viewer/operator |
 | `/bots` | bot summaries | authorised viewer/operator |
+| `/bot bot` | `getBotStatus(actor, botId)` | authorised viewer/operator |
 | `/task text` | `submitTask` | authorised operator |
+| `/cancel task_id` | `cancelTask(actor, taskId)` | authorised operator |
 | `/stop scope` | `stopSwarm` / safe stop | authorised operator |
 | `/provider name` | `setProvider` | authorised administrator |
 | `/chatmode mode` | `setChatMode` | authorised operator |

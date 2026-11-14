@@ -186,7 +186,7 @@ Proactive chat is disabled by default. It can be enabled only when Ollama is sel
 
 ### 8.2 Discord operations
 
-Discord receives interactions through `DiscordAdapter`, validates numeric `interaction.user.id` against the configured immutable allowlist, validates typed options/lengths, audits an actor ID/correlation ID, then invokes the same Coordinator methods as the dashboard. The adapter neither opens SQLite nor sees a Mineflayer client. Required slash commands are `/say`, `/sayall`, `/status`, `/bots`, `/task`, `/stop`, `/provider`, `/chatmode`, and `/help`; `/say` selects one connected bot, `/sayall` queues bounded sends through ChatManager, and `/provider` is administrator-only. Replies show safe status/error codes, never credentials, raw provider text, private address detail, or complete player chat.
+Discord receives interactions through `DiscordAdapter`, validates numeric `interaction.user.id` against the configured immutable allowlist, validates typed options/lengths, audits an actor ID/correlation ID, then invokes the same Coordinator methods as the dashboard. The adapter neither opens SQLite nor sees a Mineflayer client. Required slash commands are `/say`, `/sayall`, `/status`, `/bots`, `/bot`, `/task`, `/cancel`, `/stop`, `/provider`, `/chatmode`, and `/help`; `/bot` returns a safe per-bot snapshot, `/cancel` fences active task leases through `TaskManager`, `/say` selects one connected bot, `/sayall` queues bounded sends through ChatManager, and `/provider` is administrator-only. Replies show safe status/error codes, never credentials, raw provider text, private address detail, or complete player chat.
 
 ## 9. Survival and recovery architecture
 
