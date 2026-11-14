@@ -200,4 +200,4 @@ Recovery evaluation considers time since death, configured/observed despawn wind
 
 On `SIGINT`, `SIGTERM`, operator stop, pressure criticality, or uncaught fatal condition: stop accepting work; cancel nonessential work; safe-stop controllers; flush active checkpoint/evidence and SQLite transaction queue; stop Discord/dashboard; close provider transport; then quit bot clients with a bounded deadline. Unfinished leases expire/reconcile on restart; no task is marked complete just because shutdown occurred.
 
-See `PERFORMANCE_PLAN.md` for the measured-cap requirement and `SECURITY_PLAN.md` for network/authentication controls.
+See `SWARM_RUNTIME_DESIGN.md` for the required per-bot snapshots, Coordinator/lease/ledger transaction contract, recovery fencing, and restart semantics. See `DASHBOARD_DESIGN.md` for the authenticated operations view and API boundary, `CHROMEBOOK_OLLAMA_FEASIBILITY.md` for the concurrent-Linux-workload investigation, `PERFORMANCE_PLAN.md` for the measured-cap requirement, and `SECURITY_PLAN.md` for network/authentication controls.

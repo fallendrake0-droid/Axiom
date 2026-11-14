@@ -85,4 +85,4 @@ tests/
 | Device benchmark | manual owner approval | named Chromebook/Android | capacity/thermal/battery only |
 | Target operational smoke | manual operator session after all gates | target server | target-specific controlled observation |
 
-No test command has been run for AXIOM yet. Scripts and CI commands are created in Phase 1 and recorded in `DEVELOPMENT_STATUS.md` when executed.
+The P1-T1 foundation `npm test` command has run and currently reports 17 passing unit/security tests; its exact limited scope is recorded in `DEVELOPMENT_STATUS.md`. No later integration, private-server, provider, Discord, dashboard, device, or performance command has run. `SWARM_RUNTIME_DESIGN.md`, `DASHBOARD_DESIGN.md`, and `CHROMEBOOK_OLLAMA_FEASIBILITY.md` add the required future contract, dashboard, and concurrent-workload acceptance cases.

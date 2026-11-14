@@ -23,6 +23,14 @@
 - Added 17 unit/security tests covering safe defaults, deep immutability, unknown/prototype-polluting input, capacity/identity limits, Aternos auto-connect/session policy, hosted-provider/Discord/dashboard secret gates, private configuration-file permissions, redaction, logger integrity, non-disclosing errors, observer isolation, and typed errors.
 - The owner instruction “do whatever is best” was interpreted narrowly as authority for this zero-network P1-T1 work. It does not close OD-02 through OD-12 or authorize a Mineflayer/provider/Discord/database integration.
 
+### Independent design and certification additions
+
+- Added proposed, implementation-ready contracts for independent per-bot state; the single Coordinator, BotRegistry, TaskManager, scheduler, shared inventory ledger, assignment leases, progress verification, and recovery fencing in `docs/spec/SWARM_RUNTIME_DESIGN.md`.
+- Added a proposed loopback-first authenticated five-bot dashboard design in `docs/spec/DASHBOARD_DESIGN.md` and a concurrent-Linux-workload Chromebook/Ollama investigation protocol in `docs/spec/CHROMEBOOK_OLLAMA_FEASIBILITY.md`.
+- Completed an independent release certification audit at implementation ref `b5fc1385681dca2a2a65fa6df1bd0e5e114e1660`: **FAIL / NOT_READY**. It found no additional Replit runtime implementation beyond P1-T1; see `docs/reviews/FINAL_RELEASE_CERTIFICATION_2026-11-14.md`.
+- Added `tools/build-specification-pack.sh`, regenerated `AXIOM_SPECIFICATION_PACK.zip`, and verified the extracted internal manifest. The manifest deliberately excludes itself; the build command prints the current root archive SHA-256 after successful verification.
+- These documents and packaging repair add no bot, protocol, provider, Discord, dashboard, SQLite, device, or live-server result.
+
 ## Important research result
 
 | Area | Status | Evidence / consequence |
@@ -48,7 +56,7 @@
 | Published tarball inspection | Completed | Version lists and absence of `26.2` verified from package source. |
 | Upstream GitHub issue/PR audit | Completed | Open #4201 and #1550 recorded; no compatibility conclusion inferred from them. |
 | `npm install --package-lock-only --ignore-scripts` | Passed | Generated zero-dependency lockfile; audited 1 package, 0 vulnerabilities. |
-| `npm test` | Passed | 14 P1-T1 unit/security tests; no network or device integration. |
+| `npm test` / `npm run check` | Passed | 17 P1-T1 unit/security tests; no network or device integration. |
 | `git diff --check` | Passed | Re-run after P1-T1 changes; no whitespace errors. |
 
 ## Required next action

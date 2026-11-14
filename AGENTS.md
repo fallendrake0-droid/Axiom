@@ -12,15 +12,19 @@ The owner delegated discretion on 2026-11-14, which has been interpreted narrowl
 2. `docs/spec/MASTER_SPEC.md`
 3. `docs/spec/ARCHITECTURE.md`
 4. `docs/spec/MODULE_INTERFACES.md`
-5. `docs/spec/CONFIGURATION.md`
-6. `docs/spec/AI_PROTOCOL.md`
-7. `docs/spec/SECURITY_PLAN.md`
-8. `docs/spec/PERFORMANCE_PLAN.md`
-9. `docs/spec/TEST_PLAN.md`
-10. `docs/spec/ACCEPTANCE_CRITERIA.md`
-11. `docs/spec/IMPLEMENTATION_ROADMAP.md`
-12. `docs/spec/RISK_REGISTER.md`
-13. `DEVELOPMENT_STATUS.md` and `docs/DECISIONS.md`
+5. `docs/spec/SWARM_RUNTIME_DESIGN.md`
+6. `docs/spec/DASHBOARD_DESIGN.md` (when touching dashboard/auth/API work)
+7. `docs/spec/CHROMEBOOK_OLLAMA_FEASIBILITY.md` (when touching Ollama/device policy)
+8. `docs/spec/CONFIGURATION.md`
+9. `docs/spec/AI_PROTOCOL.md`
+10. `docs/spec/SECURITY_PLAN.md`
+11. `docs/spec/PERFORMANCE_PLAN.md`
+12. `docs/spec/TEST_PLAN.md`
+13. `docs/spec/ACCEPTANCE_CRITERIA.md`
+14. `docs/spec/IMPLEMENTATION_ROADMAP.md`
+15. `docs/spec/RISK_REGISTER.md`
+16. `docs/reviews/FINAL_RELEASE_CERTIFICATION_2026-11-14.md`
+17. `DEVELOPMENT_STATUS.md` and `docs/DECISIONS.md`
 
 When a task touches an external dependency, repeat the package/version research rather than relying on this document's 2026-11-14 audit.
 

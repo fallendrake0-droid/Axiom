@@ -10,7 +10,9 @@ AXIOM is a **specification-first** design for an intelligent Minecraft Java swar
 - [Agent instructions and implementation guardrails](AGENTS.md)
 - [Development status](DEVELOPMENT_STATUS.md)
 - [Owner decisions required](docs/DECISIONS.md)
-- [Downloadable Replit handoff pack](AXIOM_SPECIFICATION_PACK.zip) — reviewed specifications, import brief, and checksums
+- [Final release certification audit — FAIL](docs/reviews/FINAL_RELEASE_CERTIFICATION_2026-11-14.md)
+- [Downloadable Replit handoff pack](AXIOM_SPECIFICATION_PACK.zip) — reviewed specifications, import brief, reviews, and checksums
+- [Rebuild the handoff pack](tools/build-specification-pack.sh) after reviewed documentation changes
 
 ## Specification index
 
@@ -19,6 +21,9 @@ AXIOM is a **specification-first** design for an intelligent Minecraft Java swar
 | [Master specification](docs/spec/MASTER_SPEC.md) | Scope, invariants, research findings, compatibility decision and success definition |
 | [Architecture](docs/spec/ARCHITECTURE.md) | Single-process topology, data authority, state machines, directory map, database model |
 | [Module interfaces](docs/spec/MODULE_INTERFACES.md) | Module ownership, public contracts, events and schemas |
+| [Swarm runtime design](docs/spec/SWARM_RUNTIME_DESIGN.md) | Independent bot snapshots, coordinator authority, leases, shared ledger, verification, recovery, restart fencing |
+| [Dashboard design](docs/spec/DASHBOARD_DESIGN.md) | Authenticated five-bot operations view, controls, endpoint boundary, session and SSE protections |
+| [Chromebook Ollama feasibility](docs/spec/CHROMEBOOK_OLLAMA_FEASIBILITY.md) | C-0 through C-4 measurement protocol with concurrent Linux applications; no unmeasured certification |
 | [Configuration](docs/spec/CONFIGURATION.md) | Non-secret JSON configuration and secret environment contract |
 | [AI protocol](docs/spec/AI_PROTOCOL.md) | Provider contract, closed AI response schemas and validation pipeline |
 | [Performance plan](docs/spec/PERFORMANCE_PLAN.md) | Hardware feasibility, measurement protocol and resource governor |
