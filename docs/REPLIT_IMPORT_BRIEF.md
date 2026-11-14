@@ -9,10 +9,11 @@
 1. `MASTER_PROJECT_CONTEXT.md` — authoritative requirements.
 2. `AGENTS.md` — gates, scope, ownership, and non-negotiable constraints.
 3. `docs/reviews/FINAL_RELEASE_CERTIFICATION_2026-11-14.md` — actual certification verdict and missing evidence.
-4. `docs/spec/SWARM_RUNTIME_DESIGN.md` — per-bot state, Coordinator, leases, ledger, verification, and recovery contract.
-5. `docs/spec/DASHBOARD_DESIGN.md` — authenticated dashboard boundary.
-6. `docs/spec/CHROMEBOOK_OLLAMA_FEASIBILITY.md` — device investigation protocol.
-7. The remaining `docs/spec/` documents in the reading order in `AGENTS.md`.
+4. `docs/spec/REPLIT_IMPLEMENTATION_TASKS.md` — complete non-overlapping implementation assignment packets, file ownership, tests, evidence, and review gates.
+5. `docs/spec/SWARM_RUNTIME_DESIGN.md` — per-bot state, Coordinator, leases, ledger, verification, and recovery contract.
+6. `docs/spec/DASHBOARD_DESIGN.md` — authenticated dashboard boundary.
+7. `docs/spec/CHROMEBOOK_OLLAMA_FEASIBILITY.md` — device investigation protocol.
+8. The remaining `docs/spec/` documents in the reading order in `AGENTS.md`.
 
 ## Existing implementation boundary
 

@@ -4,7 +4,7 @@
 
 **Integration owner:** `AXIOM-INTEGRATOR`. Only this owner edits `package.json`, `package-lock.json`, `src/bootstrap.js`, `src/composition/createApplication.js`, migration ordering, shared export barrel files, and release evidence. Specialists own only files named in their packet. Interface additions require an accepted contract change plus consumer tests before integration.
 
-All task packets inherit: CommonJS/async; closed DTO validation; `DomainError`; structured redaction; no secrets; no direct AI execution; no direct adapter-to-database/bot invocation; bounded queues/listeners/timers; and test evidence before handoff.
+All task packets inherit: CommonJS/async; closed DTO validation; `DomainError`; structured redaction; no secrets; no direct AI execution; no direct adapter-to-database/bot invocation; bounded queues/listeners/timers; and test evidence before handoff. The field-by-field, copyable Replit assignments are in `REPLIT_IMPLEMENTATION_TASKS.md`; that document decomposes this roadmap without changing the authority, module contracts, or integration ownership defined here.
 
 ## 2. Phase sequence
 

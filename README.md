@@ -30,7 +30,8 @@ AXIOM is a **specification-first** design for an intelligent Minecraft Java swar
 | [Security plan](docs/spec/SECURITY_PLAN.md) | Threat model, controls, authorization, secret handling and incident runbooks |
 | [Test plan](docs/spec/TEST_PLAN.md) | Unit, integration, private-server, security, compatibility and benchmark tests |
 | [Acceptance criteria](docs/spec/ACCEPTANCE_CRITERIA.md) | Release gates and staged live-connection certification |
-| [Implementation roadmap](docs/spec/IMPLEMENTATION_ROADMAP.md) | Phases, non-overlapping Replit task packets and integration ownership |
+| [Implementation roadmap](docs/spec/IMPLEMENTATION_ROADMAP.md) | High-level phases, non-overlapping ownership, and integration authority |
+| [Replit implementation assignments](docs/spec/REPLIT_IMPLEMENTATION_TASKS.md) | Copyable phase-by-phase task packets with exact file boundaries, contracts, dependencies, tests, evidence, and review gates |
 | [Risk register](docs/spec/RISK_REGISTER.md) | Technical, operational, security, compatibility and compliance risks |
 
 ## Research conclusion at a glance
