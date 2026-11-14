@@ -1,8 +1,43 @@
 # AXIOM
 
-AXIOM is a **specification-first** design for an intelligent Minecraft Java swarm with up to five configured Mineflayer identities, a single Node.js coordinator, local SQLite persistence, optional remote Ollama, Discord operations, a lightweight dashboard, and strict safety controls.
+AXIOM is a **safety-constrained, specification-first** Minecraft Java swarm project. Its intended architecture is one Node.js coordinator managing up to five named Mineflayer identities, durable SQLite state, optional local/private AI inference, controlled Discord operations, and a lightweight authenticated dashboard. Every live capability is gated by exact protocol compatibility, measured device capacity, owner authority, and independent review.
 
-> **Current status — Phase 1 foundation:** A zero-network configuration, validation, redaction, structured-logging, and test foundation is implemented. It does **not** contain a bot dependency, Minecraft connection, database, dashboard, Discord client, provider integration, Aternos automation flow, or measured Android/Chromebook result. Live integration remains blocked by the documented owner decisions.
+> **Current status — Phase 1 foundation only:** The repository currently implements zero-network configuration validation, redaction, structured logging, typed errors, and 17 unit/security tests. It does **not** yet contain a Mineflayer dependency/client, Minecraft connection, task coordinator, SQLite state store, dashboard, Discord client, provider transport, Aternos automation flow, or measured Android/Chromebook result. Do not describe it as an operational bot swarm or attempt to connect it to a server.
+
+## How to run the current foundation
+
+### Prerequisites
+
+- Node.js **22 or later** (`node --version`)
+- npm supplied with that Node.js installation
+- A POSIX shell only for the optional private configuration-file permission command below
+
+### Install and validate
+
+```bash
+npm ci --ignore-scripts
+npm run check
+```
+
+`npm run check` runs the current 17 zero-network unit/security tests. It does not contact Minecraft, Aternos, Discord, Ollama, Gemini, Groq, a dashboard listener, or SQLite.
+
+### Validate a private configuration file locally
+
+The repository intentionally does not commit `config/axiom.config.json`. To validate a local non-secret configuration, copy the safe example and restrict its file permissions on non-Windows systems:
+
+```bash
+cp config/axiom.config.example.json config/axiom.config.json
+chmod 600 config/axiom.config.json
+node - <<'NODE'
+const { loadConfiguration } = require('./src/bootstrap');
+const { loader } = loadConfiguration();
+console.log(JSON.stringify(loader.redactedSnapshot(), null, 2));
+NODE
+```
+
+This command validates and prints a **redacted** configuration snapshot only. The example retains the requested Java 26.2 target as `blocked_unverified`; calling its connection gate is expected to reject the target. It cannot start a bot, open a socket, start a dashboard, call a provider, or automate Aternos.
+
+There is intentionally **no `npm start` command** yet. An operational runbook can be added only after the exact Minecraft compatibility gate, implementation tasks, private-server tests, device qualification, security tests, and release acceptance gates pass.
 
 ## Read first
 
